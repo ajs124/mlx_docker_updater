@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -u
+mkdir /tmp/mlx_upd
+cd /tmp/mlx_upd
+lspci -nn | grep Mellanox
+echo "Enter PCI id of your device: "
+read id
+mstflint -d "$id" q
+
+echo "Enter URL for firmware download (as zip/tar): "
+read url
+wget "$url"
+bsdtar xvf *
+
+mstflint -d "$id" -i *.bin b
+mstflint -d "$id" q
+exec bash
